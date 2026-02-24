@@ -2,3 +2,6 @@
 	path = external/zed-opencv-calibration
 	url = git@github.com:diegomarzaa/zed-opencv-calibration.git
 	branch = feature/remote-calibration
+[submodule "external/image_pipeline"]
+	path = external/image_pipeline
+	url = git@github.com:ros-perception/image_pipeline.git
