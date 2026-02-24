@@ -5,3 +5,6 @@
 [submodule "external/image_pipeline"]
 	path = external/image_pipeline
 	url = git@github.com:ros-perception/image_pipeline.git
+[submodule "external/zed-ros2-wrapper"]
+	path = external/zed-ros2-wrapper
+	url = git@github.com:stereolabs/zed-ros2-wrapper.git

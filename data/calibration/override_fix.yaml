@@ -1,0 +1,6 @@
+/**:
+  ros__parameters:
+    general:
+      # Path to custom OpenCV calibration file
+      # This overrides the factory calibration
+      optional_opencv_calibration_file: '/calibration/zed_underwater_calibration_fix.yml'
