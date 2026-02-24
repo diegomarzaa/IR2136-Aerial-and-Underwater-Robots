@@ -1,0 +1,4 @@
+[submodule "external/zed-opencv-calibration"]
+	path = external/zed-opencv-calibration
+	url = git@github.com:diegomarzaa/zed-opencv-calibration.git
+	branch = feature/remote-calibration
