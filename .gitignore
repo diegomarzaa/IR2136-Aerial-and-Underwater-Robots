@@ -1,4 +1,13 @@
+# BIG RECORDINGS
 captures/recordings/
 svo/
 data/captures/recordings
 data/example_recordings
+
+# ROS BUILD
+build
+install
+log
+
+# CACHE
+__pycache__

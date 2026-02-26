@@ -1,5 +1,6 @@
 name: cirtesu-zed
 
+# ── GPU/ZED services ──────────────────────────────────────────
 x-zed-common: &zed-common
   gpus: all
   privileged: true
@@ -27,65 +28,57 @@ x-zed-common: &zed-common
     - ../data/rosbags:/rosbags
     - ../config:/config:ro
 
+# ── Pure ROS 2 services ───────────────────────────────────────
 x-ros-common: &ros-common
   network_mode: host
-  stdin_open: true
-  tty: true
   shm_size: '2gb'
   ipc: host
+  stdin_open: true
+  tty: true
   environment:
     DISPLAY: ${DISPLAY:-:0}
-  volumes:
-    - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    - ../:/workspace
-    - ../data/calibration:/calibration
-    - ../data/captures:/captures
-    - ../data/rosbags:/rosbags
-    - ../config:/config:ro
 
 services:
-  zed-sdk:
-    <<: *zed-common
-    image: stereolabs/zed:5.1-gl-devel-cuda12.8-ubuntu24.04
-    container_name: zed-sdk
-    profiles: ["sdk"]
+  # Profile: ros2
+  # Pure ROS 2 Humble dev environment. No ZED SDK.
+  # Add packages here as your project grows.
+  ros2:
+    <<: *ros-common
+    build:
+      context: /home/diego/Documents/Development/docker/base/humble-desktop
+      dockerfile: Dockerfile
+    image: ros2-humble:humble
+    container_name: ros2-humble
+    profiles: ["ros2"]
 
-  zed-calib:
+  ## Profile: zed
+  ## ZED SDK base. Use for quick SDK tests or as build reference.
+  zed:
     <<: *zed-common
     build:
       context: ..
-      dockerfile: docker/calib/Dockerfile
-    image: cirtesu/zed-calib:2026-02
-    container_name: zed-calib
-    working_dir: /workspace/Repos/zed-opencv-calibration
+      dockerfile: docker/base-zed/Dockerfile
+    image: zed:humble
+    container_name: zed
+    profiles: ["zed"]
+
+  # Profile: calib
+  # Main working image: ZED SDK + ROS 2 Humble + calibration binary (pre-built).
+  # No build tools at runtime.
+  zed-ros2-calib:
+    <<: *zed-common
+    build:
+      context: ..
+      dockerfile: docker/zed-ros2-calib/Dockerfile
+    image: zed-ros2-calib:2026-02
+    container_name: zed-ros2-calib
+    working_dir: /workspace/external/zed-opencv-calibration
     environment:
       DISPLAY: ${DISPLAY:-:0}
       NVIDIA_VISIBLE_DEVICES: all
       NVIDIA_DRIVER_CAPABILITIES: all
       __NV_PRIME_RENDER_OFFLOAD: 1
       __GLX_VENDOR_LIBRARY_NAME: nvidia
-      ROS_DOMAIN_ID: ${ROS_DOMAIN_ID:-0}
       ZED_SDK_SVO_VERSION: ${ZED_SDK_SVO_VERSION:-1}
       PYTHONNOUSERSITE: "1"
     profiles: ["calib"]
-
-  zed-ros2:
-    <<: *zed-common
-    build:
-      context: ..
-      dockerfile: docker/ros2/Dockerfile
-    image: cirtesu/zed-ros2-jazzy:2026-02
-    container_name: zed-ros2
-    pid: host
-    profiles: ["ros2"]
-
-  zed-calib-humble:
-    <<: *ros-common
-    build:
-      context: ..
-      dockerfile: docker/ros2-humble-calib/Dockerfile
-    image: cirtesu/zed-calib-humble:2026-02
-    container_name: zed-calib-humble
-    working_dir: /workspace/Repos/zed-opencv-calibration
-    pid: host
-    profiles: ["calib-humble"]

@@ -1,0 +1,12 @@
+.git
+**/.git
+data
+**/*.bag
+**/*.db3
+**/*.mcap
+**/*.svo
+**/*.mp4
+**/*.png
+**/*.pcd
+**/build
+**/.cache
